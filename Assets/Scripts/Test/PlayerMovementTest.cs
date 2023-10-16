@@ -10,13 +10,15 @@ namespace Test
     {
         private CharacterController _controller;
         [SerializeField] private PlayerInputTest _playerInputTest;
-        private Vector3 playerVelocity;
-        private bool groundedPlayer;
-        private float playerSpeed = 2.0f;
-        private float jumpHeight = 1.0f;
-        private float gravityValue = -9.81f;
-        [SerializeField] bool isJump;
-        [SerializeField] Vector3 move;
+        private Vector3 _playerVelocity;
+        private bool _groundedPlayer;
+        private float _playerSpeed = 1f;
+        private float _jumpHeight = 1.0f;
+        private float _gravityValue = -9.81f;
+        private float _runSpeed = 5f;
+        private bool _isRun = false;
+        [SerializeField] bool _isJump;
+        [SerializeField] Vector3 _move;
         private Plane _plane = new Plane(Vector3.up, Vector3.zero);
         private Camera _camera;
 
@@ -28,30 +30,45 @@ namespace Test
 
         void Update()
         {
-            groundedPlayer = _controller.isGrounded;
-            if (groundedPlayer && playerVelocity.y < 0)
+            _groundedPlayer = _controller.isGrounded;
+            if (_groundedPlayer && _playerVelocity.y < 0)
             {
-                playerVelocity.y = 0f;
+                _playerVelocity.y = 0f;
             }
 
-            move = _playerInputTest.GetMovedValue();
-            isJump = _playerInputTest.GetJumpValue();
-            //Debug.Log(move);
-            _controller.Move(move * Time.deltaTime * playerSpeed);
+            _move = _playerInputTest.GetMovedValue();
+            _isJump = _playerInputTest.GetJumpValue();
+            _isRun = _playerInputTest.GetRunValue();
+            //Debug.Log(_isRun);
+            //_isRun == true ? _playerSpeed = _runSpeed : _playerSpeed = 2f;
 
-            if (move != Vector3.zero)
+
+            if (_isRun)
             {
-                gameObject.transform.forward = move;
+
+                _playerSpeed = _runSpeed;
+            }
+            else
+            {
+                _playerSpeed = 1f;
+            }
+            //Debug.Log(move);
+            //_controller.Move(_move * Time.deltaTime * _playerSpeed);
+
+            if (_move != Vector3.zero)
+            {
+                gameObject.transform.forward = _move;
             }
 
             // Changes the height position of the player..
-            //Debug.Log(groundedPlayer);
-            if (isJump && groundedPlayer)
+            //Debug.Log(_groundedPlayer);
+            if (_isJump && _groundedPlayer)
             {
-                playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                _playerVelocity.y += Mathf.Sqrt(_jumpHeight * -3.0f * _gravityValue);
             }
+            //playerVelocity.y += gravityValue * Time.deltaTime;
 
-            playerVelocity.y += gravityValue * Time.deltaTime;
+            _playerVelocity.y += _gravityValue * Time.deltaTime;
             //move = Vector3.zero;
             //isJump = false;
 
@@ -66,10 +83,22 @@ namespace Test
                 var angle = -Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg + 90;
                 Vector3 rotDir = new Vector3(0, angle, 0);
                 _controller.transform.rotation = Quaternion.Euler(rotDir);
-                playerVelocity = dir;
+                _playerVelocity = new Vector3(dir.x*_playerSpeed, _playerVelocity.y, dir.z*_playerSpeed);
                 //_characterMovement.Rotation = angle;
             }
-            _controller.Move(playerVelocity  * Time.deltaTime);
+            //if (_isRun == true)
+            //{
+            //    _controller.Move(_playerVelocity * _runSpeed * Time.deltaTime);
+
+            //    //_playerSpeed = _runSpeed;
+            //}
+            //else
+            //{
+            //    _controller.Move(_playerVelocity * _playerSpeed * Time.deltaTime);
+
+            //    //_playerSpeed = 2f;
+            //}
+            _controller.Move(_playerVelocity  * Time.deltaTime);
 
 
 

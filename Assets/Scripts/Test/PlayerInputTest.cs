@@ -12,6 +12,7 @@ namespace Test
         private GameInput _gameInput;
         [SerializeField] private Vector2 _moveInput;
         [SerializeField] private bool _jumpedInput;
+        [SerializeField] private bool _runInput;
         [SerializeField] private Vector2 _pointerInput;
         // Start is called before the first frame update
         private void Awake()
@@ -25,13 +26,25 @@ namespace Test
             _gameInput.Player.Movement.performed += OnMoved;
             _gameInput.Player.Jump.performed += OnJumped;
             _gameInput.Player.PointerPosition.performed += OnPointerPos;
+            _gameInput.Player.Run.performed += OnRun;
         }
         private void OnDisable()
         {
             _gameInput.Player.Movement.performed -= OnMoved;
             _gameInput.Player.Jump.performed -= OnJumped;
             _gameInput.Player.PointerPosition.performed -= OnPointerPos;
+            _gameInput.Player.Run.performed += OnRun;
             _gameInput.Disable();
+        }
+        private void OnRun(InputAction.CallbackContext context)
+        {
+         
+            Run();
+        }
+        private void Run()
+        {
+            _runInput = _gameInput.Player.Run.IsPressed();
+           
         }
         private void OnPointerPos(InputAction.CallbackContext context)
         {
@@ -71,15 +84,21 @@ namespace Test
         {
             return _jumpedInput;
         }
+        public bool GetRunValue()
+        {
+            return _runInput;
+        }
         public Vector2 GetPointerPosition()
         {
             return _pointerInput;
         }
         private void Update()
         {
+            Debug.Log(_runInput);
             Moved();
             Jumped();
             PointerPos();
+            Run();
         }
 
     }
