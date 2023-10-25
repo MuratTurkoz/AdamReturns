@@ -73,6 +73,33 @@ namespace Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""16281180-a7fc-4a01-8d3b-faa7efe26cda"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""e83e2fbd-f337-4306-b8e5-cfe9f6ba28f3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseRightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f58e9a7-8b6c-425b-aba8-a70801387ead"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -156,10 +183,10 @@ namespace Input
                 {
                     ""name"": """",
                     ""id"": ""7696b565-f27a-4a40-978f-800982d86589"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -172,6 +199,39 @@ namespace Input
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""168e460f-ff59-4090-aa9d-84fa1a6ab204"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Mouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7a006b44-f520-4ac4-bbd5-e661391f65f6"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MouseLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aa4888fe-78a5-4f13-af13-24bd82305efa"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MouseRightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -215,6 +275,9 @@ namespace Input
             m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
+            m_Player_Mouse = m_Player.FindAction("Mouse", throwIfNotFound: true);
+            m_Player_MouseLeftClick = m_Player.FindAction("MouseLeftClick", throwIfNotFound: true);
+            m_Player_MouseRightClick = m_Player.FindAction("MouseRightClick", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -281,6 +344,9 @@ namespace Input
         private readonly InputAction m_Player_PointerPosition;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Run;
+        private readonly InputAction m_Player_Mouse;
+        private readonly InputAction m_Player_MouseLeftClick;
+        private readonly InputAction m_Player_MouseRightClick;
         public struct PlayerActions
         {
             private @GameInput m_Wrapper;
@@ -290,6 +356,9 @@ namespace Input
             public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputAction @Run => m_Wrapper.m_Player_Run;
+            public InputAction @Mouse => m_Wrapper.m_Player_Mouse;
+            public InputAction @MouseLeftClick => m_Wrapper.m_Player_MouseLeftClick;
+            public InputAction @MouseRightClick => m_Wrapper.m_Player_MouseRightClick;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -314,6 +383,15 @@ namespace Input
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @Mouse.started += instance.OnMouse;
+                @Mouse.performed += instance.OnMouse;
+                @Mouse.canceled += instance.OnMouse;
+                @MouseLeftClick.started += instance.OnMouseLeftClick;
+                @MouseLeftClick.performed += instance.OnMouseLeftClick;
+                @MouseLeftClick.canceled += instance.OnMouseLeftClick;
+                @MouseRightClick.started += instance.OnMouseRightClick;
+                @MouseRightClick.performed += instance.OnMouseRightClick;
+                @MouseRightClick.canceled += instance.OnMouseRightClick;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -333,6 +411,15 @@ namespace Input
                 @Run.started -= instance.OnRun;
                 @Run.performed -= instance.OnRun;
                 @Run.canceled -= instance.OnRun;
+                @Mouse.started -= instance.OnMouse;
+                @Mouse.performed -= instance.OnMouse;
+                @Mouse.canceled -= instance.OnMouse;
+                @MouseLeftClick.started -= instance.OnMouseLeftClick;
+                @MouseLeftClick.performed -= instance.OnMouseLeftClick;
+                @MouseLeftClick.canceled -= instance.OnMouseLeftClick;
+                @MouseRightClick.started -= instance.OnMouseRightClick;
+                @MouseRightClick.performed -= instance.OnMouseRightClick;
+                @MouseRightClick.canceled -= instance.OnMouseRightClick;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -375,6 +462,9 @@ namespace Input
             void OnPointerPosition(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnRun(InputAction.CallbackContext context);
+            void OnMouse(InputAction.CallbackContext context);
+            void OnMouseLeftClick(InputAction.CallbackContext context);
+            void OnMouseRightClick(InputAction.CallbackContext context);
         }
     }
 }

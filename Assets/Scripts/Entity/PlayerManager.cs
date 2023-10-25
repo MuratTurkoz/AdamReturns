@@ -1,14 +1,14 @@
+using Polyperfect.Universal;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerManager : CharacterManager<Player>
 {
-    
-    // Start is called before the first frame update
+    [SerializeField] Player _player;
     void Start()
     {
-        GetCharacter();
+        Moved(_player);
     }
 
     // Update is called once per frame
@@ -16,4 +16,6 @@ public class PlayerManager : CharacterManager<Player>
     {
 
     }
+    
+
 }

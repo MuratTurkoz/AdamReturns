@@ -13,7 +13,12 @@ namespace Test
         [SerializeField] private Vector2 _moveInput;
         [SerializeField] private bool _jumpedInput;
         [SerializeField] private bool _runInput;
+        [SerializeField] private bool _mouseLeftInput;
+        [SerializeField] private bool _mouseRightInput;
         [SerializeField] private Vector2 _pointerInput;
+        [SerializeField] private Vector2 _mouseInput;
+        [SerializeField] private bool _mouseLeftAttackInput;
+       
         // Start is called before the first frame update
         private void Awake()
         {
@@ -27,6 +32,10 @@ namespace Test
             _gameInput.Player.Jump.performed += OnJumped;
             _gameInput.Player.PointerPosition.performed += OnPointerPos;
             _gameInput.Player.Run.performed += OnRun;
+            _gameInput.Player.Mouse.performed += OnMousePos;
+            _gameInput.Player.MouseLeftClick.performed += OnMouseLeftClick;
+            _gameInput.Player.Attack.performed += OnMouseRightAttack;
+            _gameInput.Player.MouseRightClick.performed += OnMouseRightClick;
         }
         private void OnDisable()
         {
@@ -34,17 +43,61 @@ namespace Test
             _gameInput.Player.Jump.performed -= OnJumped;
             _gameInput.Player.PointerPosition.performed -= OnPointerPos;
             _gameInput.Player.Run.performed += OnRun;
+            _gameInput.Player.Mouse.performed -= OnMousePos;
+            _gameInput.Player.Attack.performed -= OnMouseRightAttack;
+            _gameInput.Player.MouseLeftClick.performed -= OnMouseLeftClick;
+            _gameInput.Player.MouseRightClick.performed -= OnMouseRightClick;
             _gameInput.Disable();
+        }
+        private void OnMouseRightAttack(InputAction.CallbackContext context)
+        {
+            //context.action.IsPressed();
+            MouseLeftAttack();
+        }
+
+        private void OnMouseRightClick(InputAction.CallbackContext context)
+        {
+            //context.action.IsPressed();
+            MouseRightClick();
+        }
+        private void OnMouseLeftClick(InputAction.CallbackContext context)
+        {
+            MouseLeftClick();
+        }
+        private void MouseLeftAttack()
+        {
+            _mouseLeftAttackInput = _gameInput.Player.Attack.IsPressed();
+
+        }
+        private void MouseRightClick()
+        {
+            _mouseRightInput = _gameInput.Player.MouseRightClick.IsPressed();
+
+        }
+        private void MouseLeftClick()
+        {
+            _mouseLeftInput = _gameInput.Player.MouseLeftClick.IsPressed();
+
+        }
+
+        private void OnMousePos(InputAction.CallbackContext context)
+        {
+            MousePos();
+        }
+        private void MousePos()
+        {
+            _mouseInput = _gameInput.Player.Mouse.ReadValue<Vector2>();
+
         }
         private void OnRun(InputAction.CallbackContext context)
         {
-         
+
             Run();
         }
         private void Run()
         {
             _runInput = _gameInput.Player.Run.IsPressed();
-           
+
         }
         private void OnPointerPos(InputAction.CallbackContext context)
         {
@@ -52,7 +105,7 @@ namespace Test
         }
         private void PointerPos()
         {
-            
+
             _pointerInput = _gameInput.Player.PointerPosition.ReadValue<Vector2>();
 
         }
@@ -88,17 +141,41 @@ namespace Test
         {
             return _runInput;
         }
+        public bool GetMouseLeftClickValue()
+        {
+            return _mouseLeftInput;
+        }
+        public bool GetMouseRightClickValue()
+        {
+            return _mouseRightInput;
+        }
         public Vector2 GetPointerPosition()
         {
             return _pointerInput;
         }
+        public Vector2 GetMouseDeltaPosition()
+        {
+            return _mouseInput;
+        }
+        public bool GetMouseLeftAttackValue()
+        {
+            return _mouseLeftAttackInput;
+        }
         private void Update()
         {
-            Debug.Log(_runInput);
+            //Debug.Log(_runInput);
             Moved();
             Jumped();
             PointerPos();
             Run();
+            MousePos();
+            MouseLeftAttack();
+            //Debug.Log(_mouseInput.sqrMagnitude);
+        }
+        private void FixedUpdate()
+        {
+            MouseLeftClick();
+            MouseRightClick();
         }
 
     }

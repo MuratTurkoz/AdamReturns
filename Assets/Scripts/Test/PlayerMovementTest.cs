@@ -1,7 +1,9 @@
 using Input;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Test
 {
@@ -10,9 +12,10 @@ namespace Test
     {
         private CharacterController _controller;
         [SerializeField] private PlayerInputTest _playerInputTest;
-        private Vector3 _playerVelocity;
+        [SerializeField] private Animator _animator;
+        [SerializeField] private Vector3 _playerVelocity;
         private bool _groundedPlayer;
-        private float _playerSpeed = 1f;
+        [SerializeField] private float _playerSpeed = 1f;
         private float _jumpHeight = 1.0f;
         private float _gravityValue = -9.81f;
         private float _runSpeed = 5f;
@@ -21,6 +24,13 @@ namespace Test
         [SerializeField] Vector3 _move;
         private Plane _plane = new Plane(Vector3.up, Vector3.zero);
         private Camera _camera;
+        [SerializeField] Vector3 worldPosition;
+        [SerializeField] Vector3 dir;
+
+
+        private bool isMoving = false;
+        private Vector3 targetPosition;
+        public float movementSpeed = 6.0f;
 
         private void Start()
         {
@@ -30,77 +40,81 @@ namespace Test
 
         void Update()
         {
+
             _groundedPlayer = _controller.isGrounded;
             if (_groundedPlayer && _playerVelocity.y < 0)
             {
                 _playerVelocity.y = 0f;
             }
-
             _move = _playerInputTest.GetMovedValue();
             _isJump = _playerInputTest.GetJumpValue();
             _isRun = _playerInputTest.GetRunValue();
-            //Debug.Log(_isRun);
-            //_isRun == true ? _playerSpeed = _runSpeed : _playerSpeed = 2f;
-
-
-            if (_isRun)
-            {
-
-                _playerSpeed = _runSpeed;
-            }
-            else
-            {
-                _playerSpeed = 1f;
-            }
-            //Debug.Log(move);
-            //_controller.Move(_move * Time.deltaTime * _playerSpeed);
-
-            if (_move != Vector3.zero)
-            {
-                gameObject.transform.forward = _move;
-            }
-
-            // Changes the height position of the player..
-            //Debug.Log(_groundedPlayer);
             if (_isJump && _groundedPlayer)
             {
                 _playerVelocity.y += Mathf.Sqrt(_jumpHeight * -3.0f * _gravityValue);
             }
-            //playerVelocity.y += gravityValue * Time.deltaTime;
 
             _playerVelocity.y += _gravityValue * Time.deltaTime;
-            //move = Vector3.zero;
-            //isJump = false;
 
-            var ray = _camera.ScreenPointToRay(_playerInputTest.GetPointerPosition());
-
-            if (_plane.Raycast(ray, out float enter))
+            if (_playerInputTest.GetMouseLeftClickValue())
             {
-                var worldPosition = ray.GetPoint(enter);
-                var dir = (worldPosition - transform.position).normalized;
-                //Quaternion.LookRotation(dir).eulerAngles.y
 
-                var angle = -Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg + 90;
-                Vector3 rotDir = new Vector3(0, angle, 0);
-                _controller.transform.rotation = Quaternion.Euler(rotDir);
-                _playerVelocity = new Vector3(dir.x*_playerSpeed, _playerVelocity.y, dir.z*_playerSpeed);
-                //_characterMovement.Rotation = angle;
+                var ray = _camera.ScreenPointToRay(_playerInputTest.GetPointerPosition());
+
+                if (_plane.Raycast(ray, out float enter))
+                {
+
+                    isMoving = true;
+                    worldPosition = ray.GetPoint(enter);
+                    //Direction
+                    dir = (worldPosition - transform.position).normalized;
+                    //Quaternion.LookRotation(dir).eulerAngles.y
+
+                    var angle = -Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg + 90;
+                    Vector3 rotDir = new Vector3(0, angle, 0);
+                    _controller.transform.rotation = Quaternion.Euler(rotDir);
+                    _playerVelocity = new Vector3(dir.x * _playerSpeed, _playerVelocity.y, dir.z * _playerSpeed);
+
+
+                }
+
+                RaycastHit hit;
+                Ray ray1 = _camera.ScreenPointToRay(_playerInputTest.GetPointerPosition());
+
+                if (Physics.Raycast(ray1, out hit))
+                {
+                    Debug.Log(hit.transform.name);
+                }
+
             }
-            //if (_isRun == true)
-            //{
-            //    _controller.Move(_playerVelocity * _runSpeed * Time.deltaTime);
 
-            //    //_playerSpeed = _runSpeed;
-            //}
-            //else
-            //{
-            //    _controller.Move(_playerVelocity * _playerSpeed * Time.deltaTime);
+            if (isMoving)
+            {
+                MoveToTargetPosition();
+            }
 
-            //    //_playerSpeed = 2f;
-            //}
-            _controller.Move(_playerVelocity  * Time.deltaTime);
+        }
 
 
+        private void MoveToTargetPosition()
+        {
+            Vector3 moveDirection = targetPosition - transform.position;
+
+            _animator.SetFloat("MoveVelocity", _playerVelocity.magnitude);
+            if (moveDirection.magnitude < 1.1f)
+            {
+                _animator.SetFloat("MoveVelocity", 0);
+
+            }
+
+            moveDirection = moveDirection.normalized * _playerSpeed * Time.deltaTime;
+
+            _playerVelocity = _playerVelocity * _playerSpeed * Time.deltaTime;
+            _controller.Move(_playerVelocity);
+
+        }
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
 
 
         }

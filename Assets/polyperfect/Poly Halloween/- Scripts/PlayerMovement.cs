@@ -46,15 +46,9 @@ namespace Polyperfect.Universal
                 controller.slopeLimit = 100.0f;
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             }
-
-
-
             velocity.y += gravity * Time.deltaTime;
 
             controller.Move(velocity * Time.deltaTime);
-
-
-
 
         }
     }
