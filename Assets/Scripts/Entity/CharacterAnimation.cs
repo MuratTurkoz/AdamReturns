@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : Character
+public class CharacterAnimation<T> where T : Character
 {
-
-
 
 }

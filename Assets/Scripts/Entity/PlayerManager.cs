@@ -1,21 +1,24 @@
 using Polyperfect.Universal;
 using System.Collections;
 using System.Collections.Generic;
+using Test;
 using UnityEngine;
 
 public class PlayerManager : CharacterManager<Player>
 {
-    [SerializeField] Player _player;
+    Player _player;
+    [SerializeField] PlayerInputTest _inputTest;
     void Start()
     {
-        Moved(_player);
+       
+     
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        Moved(_player,_inputTest);
     }
-    
+
 
 }
