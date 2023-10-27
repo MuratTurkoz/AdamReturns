@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.XR;
 
 public class CharacterManager<T> : MonoBehaviour where T : Character
 {
-    
+
     public string GetCharacterName()
     {
 
@@ -34,11 +34,14 @@ public class CharacterManager<T> : MonoBehaviour where T : Character
 
     public void Live(T obj)
     {
-         
+
         throw new System.NotImplementedException();
     }
 
-    public virtual void Moved(T obj);
+    public void Moved(T obj)
+    {
+
+    }
 
 
     public void Upgrade(T obj)

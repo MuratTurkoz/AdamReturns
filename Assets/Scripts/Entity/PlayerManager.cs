@@ -17,7 +17,7 @@ public class PlayerManager : CharacterManager<Player>
     // Update is called once per frame
     void Update()
     {
-        Moved(_player,_inputTest);
+        Moved(_player);
     }
 
 
