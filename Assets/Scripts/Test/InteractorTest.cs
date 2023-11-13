@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Test;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class InteractorTest : MonoBehaviour
 {
@@ -32,8 +33,10 @@ public class InteractorTest : MonoBehaviour
         {
             if (_colliders[0].gameObject.CompareTag("Enemy"))
             {
-                animator.SetFloat("MoveVelocity", 0);
-                animator.SetBool("IsAttack", true);
+                _colliders[0].GetComponentInParent<AITest>().Position = transform.position;
+
+                //animator.SetFloat("MoveVelocity", 0);
+                //animator.SetBool("IsAttack", true);
             }
             else
             {

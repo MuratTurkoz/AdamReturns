@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Test;
 using TMPro;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -33,7 +34,31 @@ public class PlayerCharacterMoveTest : MonoBehaviour
 
     void Update()
     {
+        //Collider[] cols = Physics.OverlapSphere(transform.position, 10f);
+        //foreach (var item in cols)
+        //{
+        //    if (item.CompareTag("Enemy"))
+        //    {
+        //        item.GetComponentInParent<AITest>().Position = transform.position;
+        //    }
+        //    Debug.Log(item.name);
+        //}
+
+
         //Debug.Log(_playerInputTest.GetMouseLeftAttackValue());
+        GetMouseLeftClick();
+        GetMouseRightClick();
+        //_animator.SetBool("IsMagic", false);
+        CheckGrounded();
+        //Move
+        GetMoved();
+        GetJumped();
+
+        // Changes the height position of the player..
+    }
+
+    private void GetMouseLeftClick()
+    {
         if (_playerInputTest.GetMouseLeftClickValue())
         {
             _animator.SetBool("IsMagic", false);
@@ -45,10 +70,12 @@ public class PlayerCharacterMoveTest : MonoBehaviour
                 isMoving = true;
                 targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
                 Debug.Log(hit.collider.name);
-
             }
 
         }
+    }
+    private void GetMouseRightClick()
+    {
         if (_playerInputTest.GetMouseRightClickValue())
         {
             RaycastHit hit;
@@ -62,32 +89,21 @@ public class PlayerCharacterMoveTest : MonoBehaviour
                     targetPosition = new Vector3(hit.point.x, 0, hit.point.z);
                     moveDirection = targetPosition - transform.position;
                     Quaternion.LookRotation(moveDirection.normalized);
-
-                    _animator.SetBool("IsMagic",true);
+                    _animator.SetBool("IsMagic", true);
                 }
 
             }
-      
-
-
         }
         else
         {
             _animator.SetBool("IsMagic", false);
         }
-        //_animator.SetBool("IsMagic", false);
-
-
-        //Move
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
-        {
-            playerVelocity.y = 0f;
-        }
-
+    }
+    private void GetMoved()
+    {
         if (isMoving)
         {
-            
+
             _animator.SetFloat("MoveVelocity", Convert.ToInt32(isMoving));
             moveDirection = targetPosition - transform.position;
             //Debug.Log(moveDirection.magnitude);
@@ -119,7 +135,19 @@ public class PlayerCharacterMoveTest : MonoBehaviour
             gameObject.transform.forward = moveDirection;
         }
 
-        // Changes the height position of the player..
+    }
+
+    private void CheckGrounded()
+    {
+        groundedPlayer = controller.isGrounded;
+        if (groundedPlayer && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+        }
+    }
+
+    private void GetJumped()
+    {
 
         if (_playerInputTest.GetJumpValue() && groundedPlayer)
         {
@@ -128,11 +156,6 @@ public class PlayerCharacterMoveTest : MonoBehaviour
 
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
-
-
-
-
     }
-
-
 }
+
