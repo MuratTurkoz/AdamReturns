@@ -33,52 +33,18 @@ public class InteractorTest : MonoBehaviour
         {
             if (_colliders[0].gameObject.CompareTag("Enemy"))
             {
+                Debug.Log("Hi");
                 _colliders[0].GetComponentInParent<AITest>().Position = transform.position;
-
-                //animator.SetFloat("MoveVelocity", 0);
-                //animator.SetBool("IsAttack", true);
             }
             else
             {
                 animator.SetBool("IsAttack", false);
             }
-            //RaycastHit hitInfo;
-            //bool val = Physics.Raycast(_interactionPoint.position, _colliders[0].transform.position, out hitInfo, 1f);
-            //Debug.DrawLine(_interactionPoint.position, _colliders[0].transform.position, Color.red, 1f);
-            //Debug.Log(val);
-            //if (val)
-            //{
-            //    if (hitInfo.transform.CompareTag("Enemy"))
-            //    {
-            //        animator.SetFloat("MoveVelocity", 0);
-            //        animator.SetBool("IsAttack",true);
-            //    }
-            //    else
-            //    {
-                  
 
-            //    }
-
-
-            //}
-      
-
-
-            //animator.SetBool("IsAttack", false);
             Debug.Log(_colliders.Length);
-            //if (_colliders.Where(z=>z.transform.name=="Enemy").ToList().Count>0)
-            //{
-            //}
+
             _characterMoveTest.IsMoving = false;
-            //Debug.Log(_colliders);
-            //foreach (var item in _colliders)
-            //{
-            //    //if (item.transform.name == "Cube")
-            //    //{
-            //    //    Debug.Log("Attack");
-            //    //    //return;
-            //    //}
-            //}
+
 
         }
         else
@@ -87,13 +53,6 @@ public class InteractorTest : MonoBehaviour
 
         }
 
-
-        //Debug.DrawLine(,);
-        //bool valueX = Physics.Raycast(transform.position, Vector3.forward, out RaycastHit val, 1f, _layerMask);
-        //if (valueX)
-        //{
-        //    Debug.Log(val.transform.name);
-        //}
     }
     //private void OnDrawGizmos()
     //{

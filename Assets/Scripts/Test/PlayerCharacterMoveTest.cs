@@ -34,15 +34,15 @@ public class PlayerCharacterMoveTest : MonoBehaviour
 
     void Update()
     {
-        //Collider[] cols = Physics.OverlapSphere(transform.position, 10f);
-        //foreach (var item in cols)
-        //{
-        //    if (item.CompareTag("Enemy"))
-        //    {
-        //        item.GetComponentInParent<AITest>().Position = transform.position;
-        //    }
-        //    Debug.Log(item.name);
-        //}
+        Collider[] cols = Physics.OverlapSphere(transform.position, 10f);
+        foreach (var item in cols)
+        {
+            if (item.CompareTag("Enemy"))
+            {
+                item.GetComponentInParent<AITest>().Position = transform.position;
+            }
+            Debug.Log(item.name);
+        }
 
 
         //Debug.Log(_playerInputTest.GetMouseLeftAttackValue());
